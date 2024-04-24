@@ -30,6 +30,37 @@ app.post('/sortNumbers', (req, res) => {
   res.status(200).send({ numbers: numbers });
 })
 
+app.post('/sumNumbers', (req, res) => {
+  console.log(req.body);
+  const a = req.body.a;
+  const b = req.body.b;
+  if (a === undefined || b === undefined) {
+    res.status(400).send({ message: "Both parameters a and b are required" });
+    return;
+  }
+  if (isNaN(a) || isNaN(b)) {
+    res.status(400).send({ message: "Both parameters a and b must be numbers" });
+    return;
+  }
+  if (a < 0 || a > 100 || b < 0 || b > 100) {
+    res.status(400).send({ message: "Both parameters a and b must be between 0 and 100"});
+    return;
+  }
+  let sum = 0;
+  if (a === b) {
+    sum = a;
+  } else if (a > b) {
+    for (let i = Math.ceil(b); i <= Math.floor(a); i++) {
+      sum += i;
+    }
+  } else {
+    for (let i = Math.ceil(a); i <= Math.floor(b); i++) {
+      sum += i;
+    }
+  }
+  res.status(200).send({sum: sum});
+})
+
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
