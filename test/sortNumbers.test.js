@@ -2,18 +2,20 @@ const request = require('supertest');
 const app = require('../app.js');
 
 describe('POST /sortNumbers', () => {
-  it('should return a 400 error if numbers parameter is missing', (done) => {
-    request(app)
-      .post('/sortNumbers')
-      .send({})
-      .expect(400)
-      .end((err, res) => {
-        if (err) return done(err);
-        if (res.body.message !== "numbers parameter is required") {
-          return done(new Error(`Unexpected response message: ${res.body.message}`));
-        }
-        done();
-      });
+  describe('missing required parameters checks', () => {
+    it('should return a 400 error if numbers parameter is missing', (done) => {
+      request(app)
+        .post('/sortNumbers')
+        .send({})
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          if (res.body.message !== "numbers parameter is required") {
+            return done(new Error(`Unexpected response message: ${res.body.message}`));
+          }
+          done();
+        });
+    });
   });
 
   describe('number parameters invalid type checks', () =>{

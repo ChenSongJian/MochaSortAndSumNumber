@@ -4,6 +4,14 @@ const app = express()
 app.use(express.json());
 
 app.post('/sortNumbers', (req, res) => {
+  /*
+  requirement:
+  only accepts an array of 10 different numbers between 0 to 100 
+  and the endpoint should return the numbers in ascending order.
+
+  assumption: (to confirm)
+  - allow integer and float values
+  */
   numbers = req.body.numbers;
   if (numbers === undefined) {
     res.status(400).send({ message: "numbers parameter is required" });
@@ -34,14 +42,22 @@ app.post('/sortNumbers', (req, res) => {
 })
 
 app.post('/sumNumbers', (req, res) => {
-  console.log(req.body);
+  /*
+  requirement:
+  accepts two numbers (a, b) between 0 to 100 and the endpoint should return the sum from ‘a’ to ‘b’.
+  
+  assumption: (to confirm)
+  - allow integer and float values
+  - the 'a' and 'b' in the question are arbitrary so current implementation will add from smaller value to larger value
+  - it will add the integers in the range if float values found, if a=1.1 b=1.2 then sum from a to b = 0 since no integer found?
+  */
   const a = req.body.a;
   const b = req.body.b;
   if (a === undefined || b === undefined) {
     res.status(400).send({ message: "Both parameters a and b are required" });
     return;
   }
-  if (isNaN(a) || isNaN(b)) {
+  if (typeof a !== 'number' || typeof b !== 'number') {
     res.status(400).send({ message: "Both parameters a and b must be numbers" });
     return;
   }
@@ -50,9 +66,7 @@ app.post('/sumNumbers', (req, res) => {
     return;
   }
   let sum = 0;
-  if (a === b) {
-    sum = a;
-  } else if (a > b) {
+  if (a === b || a > b) {
     for (let i = Math.ceil(b); i <= Math.floor(a); i++) {
       sum += i;
     }
