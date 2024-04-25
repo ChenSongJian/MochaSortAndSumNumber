@@ -163,6 +163,20 @@ describe('POST /sortNumbers', () => {
   });
 
   describe('number parameters invalid element type checks', () => {
+    it('should return a 400 error if the 10 element in numbers parameter contains float number', (done) => {
+      request(app)
+        .post('/sortNumbers')
+        .send({ numbers: [12.34, 10, 9, 8, 7, 6, 5, 4, 3, 2] })
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          if (res.body.message !== "numbers parameter must only contain integer") {
+            return done(new Error(`Unexpected response message: ${res.body.message}`));
+          }
+          done();
+        });
+    });
+
     it('should return a 400 error if the 10 element in numbers parameter contains alphanumeric string', (done) => {
       request(app)
         .post('/sortNumbers')
@@ -170,7 +184,7 @@ describe('POST /sortNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "numbers parameter must only contain numbers") {
+          if (res.body.message !== "numbers parameter must only contain integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -184,7 +198,7 @@ describe('POST /sortNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "numbers parameter must only contain numbers") {
+          if (res.body.message !== "numbers parameter must only contain integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -198,7 +212,7 @@ describe('POST /sortNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "numbers parameter must only contain numbers") {
+          if (res.body.message !== "numbers parameter must only contain integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -212,7 +226,7 @@ describe('POST /sortNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "numbers parameter must only contain numbers") {
+          if (res.body.message !== "numbers parameter must only contain integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -226,7 +240,7 @@ describe('POST /sortNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "numbers parameter must only contain numbers") {
+          if (res.body.message !== "numbers parameter must only contain integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -240,7 +254,7 @@ describe('POST /sortNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "numbers parameter must only contain numbers") {
+          if (res.body.message !== "numbers parameter must only contain integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -321,7 +335,7 @@ describe('POST /sortNumbers', () => {
   });
 
   describe('number parameters valid emelents sorting checks', () => {
-    it('should return 200 with sorted elements if 10 valid integers in numbers parameter', (done) => {
+    it('should return 200 with sorted elements if 10 random valid integers in numbers parameter', (done) => {
       request(app)
         .post('/sortNumbers')
         .send({ numbers: [4, 12, 7, 26, 9, 28, 100, 0, 1, 99] })
@@ -335,28 +349,28 @@ describe('POST /sortNumbers', () => {
         });
     });
 
-    it('should return 200 with sorted elements if 10 valid float in numbers parameter', (done) => {
+    it('should return 200 with sorted elements if 10 sorted valid integers in numbers parameter', (done) => {
       request(app)
         .post('/sortNumbers')
-        .send({ numbers: [4.0, 12.1, 7.2, 26.3, 9.4, 28.5, 0.1, 100, 99.9, 0.0] })
+        .send({ numbers: [0, 1, 4, 7, 9, 12, 26, 28, 99, 100] })
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          if (JSON.stringify(res.body.numbers) !== JSON.stringify([0.0, 0.1, 4.0, 7.2, 9.4, 12.1, 26.3, 28.5, 99.9, 100.0])) {
+          if (JSON.stringify(res.body.numbers) !== JSON.stringify([0, 1, 4, 7, 9, 12, 26, 28, 99, 100])) {
             return done(new Error(`Response numbers array not sorted: ${res.body.numbers}`));
           }
           done();
         });
     });
 
-    it('should return 200 with sorted elements if 10 valid integer and float in numbers parameter', (done) => {
+    it('should return 200 with sorted elements if 10 reversed sorted valid integers in numbers parameter', (done) => {
       request(app)
         .post('/sortNumbers')
-        .send({ numbers: [4, 12.1, 7.2, 26, 9.4, 28.5, 0, 100, 0.1, 99.9] })
+        .send({ numbers: [100, 99, 28, 26, 12, 9, 7, 4, 1, 0] })
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          if (JSON.stringify(res.body.numbers) !== JSON.stringify([0, 0.1, 4, 7.2, 9.4, 12.1, 26, 28.5, 99.9, 100])) {
+          if (JSON.stringify(res.body.numbers) !== JSON.stringify([0, 1, 4, 7, 9, 12, 26, 28, 99, 100])) {
             return done(new Error(`Response numbers array not sorted: ${res.body.numbers}`));
           }
           done();

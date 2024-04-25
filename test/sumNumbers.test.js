@@ -47,6 +47,20 @@ describe('POST /sumNumbers', () => {
   });
 
   describe('parameters invalid type checks', () => {
+    it('should return a 400 error if parameter a is a float', (done) => {
+      request(app)
+        .post('/sumNumbers')
+        .send({a:1.1, b:1})
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          if (res.body.message !== "Both parameters a and b must be integer") {
+            return done(new Error(`Unexpected response message: ${res.body.message}`));
+          }
+          done();
+        });
+    });
+
     it('should return a 400 error if parameter a is a string', (done) => {
       request(app)
         .post('/sumNumbers')
@@ -54,7 +68,7 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -68,7 +82,7 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -82,7 +96,7 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -96,7 +110,7 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -110,7 +124,21 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
+            return done(new Error(`Unexpected response message: ${res.body.message}`));
+          }
+          done();
+        });
+    });
+
+    it('should return a 400 error if parameter b is a float', (done) => {
+      request(app)
+        .post('/sumNumbers')
+        .send({a:1, b:12.34})
+        .expect(400)
+        .end((err, res) => {
+          if (err) return done(err);
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -124,7 +152,7 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -138,7 +166,7 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -152,7 +180,7 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -166,7 +194,7 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -180,7 +208,7 @@ describe('POST /sumNumbers', () => {
         .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.message !== "Both parameters a and b must be numbers") {
+          if (res.body.message !== "Both parameters a and b must be integer") {
             return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
@@ -302,36 +330,38 @@ describe('POST /sumNumbers', () => {
     });
   });
 
-  describe('parameter valid sum check', () => {
-    it('should return a 200 response with the correct total sum of same integers', (done) => {
+  describe('parameter valid values compare check', () => {
+    it('should return a 400 response if valid integer a equals to valid integer b', (done) => {
       request(app)
         .post('/sumNumbers')
         .send({a:50, b:50})
-        .expect(200)
+        .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.sum !== 50) {
-            return done(new Error(`Unexpected sum: ${res.body.sum}`));
+          if (res.body.message !== "a must be less than b") {
+            return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
-        });
+        })
     });
-    
-    it('should return a 200 response with the correct total sum of same float', (done) => {
+
+    it('should return a 400 response if valid integer a larger than valid integer b', (done) => {
       request(app)
         .post('/sumNumbers')
-        .send({a:50.5, b:50.5})
-        .expect(200)
+        .send({a:50, b:49})
+        .expect(400)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.sum !== 0) {
-            return done(new Error(`Unexpected sum: ${res.body.sum}`));
+          if (res.body.message !== "a must be less than b") {
+            return done(new Error(`Unexpected response message: ${res.body.message}`));
           }
           done();
-        });
+        })
     });
-    
-    it('should return a 200 response with the correct total sum of different integer', (done) => {
+  });
+
+  describe('parameter valid sum check', () => {
+    it('should return a 200 response with the correct total sum of valid integers a and b', (done) => {
       request(app)
         .post('/sumNumbers')
         .send({a:0, b:100})
@@ -344,29 +374,15 @@ describe('POST /sumNumbers', () => {
           done();
         });
     });
-    
-    it('should return a 200 response with the correct total sum of different float', (done) => {
+
+    it('should return a 200 response with the correct total sum of consecutive valid integers a and b', (done) => {
       request(app)
         .post('/sumNumbers')
-        .send({a:0.0, b:100.0})
+        .send({a:99, b:100})
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          if (res.body.sum !== 5050) {
-            return done(new Error(`Unexpected sum: ${res.body.sum}`));
-          }
-          done();
-        });
-    });
-    
-    it('should return a 200 response with the correct total sum of integer and float', (done) => {
-      request(app)
-        .post('/sumNumbers')
-        .send({a:0, b:99.9})
-        .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-          if (res.body.sum !== 4950) {
+          if (res.body.sum !== 199) {
             return done(new Error(`Unexpected sum: ${res.body.sum}`));
           }
           done();
